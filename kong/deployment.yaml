@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kong
+  labels:
+    app: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong
+  template:
+    metadata:
+      labels:
+        app: kong
+    spec:
+      initContainers:
+      - name: kong-migration-bootstrap
+        image: kong-oidc:2.8.1-alpine
+        command: ['kong', 'migrations', 'bootstrap']
+        envFrom:
+        - secretRef:
+            name: kong-secret
+
+      - name: kong-migration-up
+        image: kong-oidc:2.8.1-alpine
+        command: ['kong', 'migrations', 'up']
+        envFrom:
+        - secretRef:
+            name: kong-secret
+        
+      containers:
+      - name: kong
+        image: kong-oidc:2.8.1-alpine
+        ports:
+        - containerPort: 8000
+          name: http
+        - containerPort: 8001
+          name: admin-http
+        - containerPort: 8443
+          name: https
+        - containerPort: 8444
+          name: admin-https
+        envFrom:
+        - secretRef:
+            name: kong-secret

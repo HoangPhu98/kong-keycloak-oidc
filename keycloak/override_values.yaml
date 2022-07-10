@@ -1,0 +1,24 @@
+global:
+  storageClass: hostpath
+
+# image:
+#   registry: quay.io
+#   repository: keycloak/keycloak
+#   tag: 17.0.0
+
+service:
+  type: NodePort
+  nodePorts:
+    http: 30180
+    https: 30181
+  
+auth: 
+  adminUser: admin
+  adminPassword: admin
+
+postgresql: 
+  enabled: true
+  auth:
+    username: keycloak
+    password: keycloak
+    database: keycloak
