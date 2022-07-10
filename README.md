@@ -1,3 +1,7 @@
+# Kong + Keycloak OIDC 
+
+```/bin/bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
 
 helm upgrade -i kong-db bitnami/postgresql -f kong-db/override_values.yaml
 
@@ -8,7 +12,7 @@ curl -s -X POST http://localhost:30081/services \
   -d url=http://mockbin.org/request \
   | python3 -mjson.tool
 
-Note id value in response
+# Note id value in response
 
 curl -s -X POST http://localhost:30081/services/7fe48815-afd6-4b46-868d-c76a74fad31a/routes -d "paths[]=/mock" \
     | python3 -mjson.tool
@@ -42,7 +46,9 @@ curl -s -X POST http://localhost:30081/plugins \
 
 curl "http://${HOST_IP}:30080/mock" \
 -H "Accept: application/json" -I
+```
 
+```text
 Connection: keep-alive
 WWW-Authenticate: Bearer realm="kong",error="no Authorization header found"
 Server: kong/1.3.0
@@ -52,8 +58,9 @@ Connection: keep-alive
 WWW-Authenticate: Bearer realm="experimental",error="no Authorization header found"
 X-Kong-Response-Latency: 2023
 Server: kong/2.8.1
+```
 
-
+```/bin/bash
 RAWTKN=$(curl -s -X POST \
         -H "Content-Type: application/x-www-form-urlencoded" \
         -d "username=demouser" \
@@ -72,7 +79,9 @@ echo $TKN
 curl "http://${HOST_IP}:30080/mock" \
 -H "Accept: application/json" \
 -H "Authorization: Bearer $TKN"
+```
 
+```text
 {
   "startedDateTime": "2022-07-10T20:25:30.133Z",
   "clientIPAddress": "192.168.65.3",
@@ -113,3 +122,4 @@ curl "http://${HOST_IP}:30080/mock" \
   "headersSize": 3059,
   "bodySize": 0
 }
+```
